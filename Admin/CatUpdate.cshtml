@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "~/Layout/_Layout.cshtml";
+    var catname = UrlData[0];
+    Validation.RequireField("CatName", "You have to enter category name");
+    var uName = Request.Form["CatName"];   
+    if (IsPost && Validation.IsValid()) 
+    {
+
+        var db = Database.Open("Product");
+        var selectQueryString = "Update Categories set catname=@0 where catname=@1";
+        var selectQueryStrings = "Update products set category=@0 where category=@1";
+        db.Query(selectQueryString, uName,catname);
+        db.Query(selectQueryStrings,uName,catname);
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Update Products</title>
+
+</head>
+<body>
+
+   <form method="post" action="" enctype="multipart/form-data">
+<div id="div1" style="float: left; margin-left:230px;">
+    
+
+ @Html.ValidationSummary("Errors with your submission:")
+
+  <h1>Update Product</h1>
+     
+       <label>Enter Category Name:</label>
+       <input name="CatName" type="text" style ="width: 250px" value="@uName" />
+        <br/>
+       
+      <input type="submit" value="Update" />
+    <br/><br/>
+     <a style ="color: #0094ff"href="~/Admin/MainPage.cshtml">Go to Main Page</a>
+    
+           
+    
+ </div>
+       </form>
+</body>
+</html>

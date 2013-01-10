@@ -1,0 +1,94 @@
+﻿
+@{
+Layout = "~/Layout/_Layout.cshtml";
+Page.Title = "Cart";
+if (!WebSecurity.IsAuthenticated)
+{
+string currentUrl = Request.Url.ToString();
+Response.Redirect("~/Login?sender=" + currentUrl);
+}
+    
+    var sum = 0;
+    if (Session["cart"] == null)
+    {
+        Session["cart"] = new Cart();
+       
+    }
+    
+    Cart cart = (Cart)Session["cart"];
+    if (IsPost)
+    {
+        if (Request["productID"] != null)
+        {
+            var productID = Request["productID"];
+            var price = Request["price"];
+            var nam = Request["name"];
+            var description = Request["description"];
+            
+            cart.AddItem(productID.AsInt(), nam,description, price.AsDecimal());
+          
+        }
+        else if (Request["removeIndex"] != null)
+        {
+                // Form posted by Cart Remove Item button
+                var removeIndex = Request["removeIndex"].AsInt();
+                if(removeIndex<0 || removeIndex>cart.Items.Count)
+                {
+                    Response.Redirect("~/Default");
+                }
+                cart.RemoveItem(removeIndex);
+        }
+                
+    }
+    <h1>Shopping Cart</h1>
+///////////////////////////
+    if(cart.Items.Count() == 0)
+    {
+        <p>There are no items in your shospping cart.</p>
+    }
+    else 
+    {
+        int i = 0;
+        <br/><br/>
+        <text>
+        
+            <table>
+        <tr>
+            <td style ="width:200px;height: 20px;"><b>Product</b></td>
+            <td style ="width:200px;height: 20px;"><b>Price</b></td>
+              <td>&nbsp;</td>    
+        </tr>
+        @foreach (var item in cart.Items)
+        {
+
+            <tr>
+            <td style ="width:200px;height: 25px;"> @item.Name</td>
+            <td style ="width:200px;height: 25px;"> $@item.Price  </td>   
+               
+            <td class="remove">
+                <form action="Cart" method="post">
+                          @Html.Hidden("removeIndex", i)
+                          <input type="submit" value="Remove" />
+                </form>
+            </td>
+          
+             </tr>
+                i++;
+         }
+            <tr class="cartTotal">
+                <td colspan="2">&nbsp;</td>
+                <td>Total: £@cart.TotalValue</td>
+                <td>&nbsp;</td>
+             </tr>
+            </table>
+                <div id="cartButtons">
+                 <a href="~/Default" class="linkButton">Continue Shopping</a>
+                 <a href="~/Checkout" class="linkButton">Proceed to Checkout</a>
+               </div>
+        </text>
+            
+     }
+
+}
+
+

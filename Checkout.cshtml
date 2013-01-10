@@ -1,0 +1,123 @@
+﻿@{
+if (!WebSecurity.IsAuthenticated)
+{
+string currentUrl = Request.Url.ToString();
+Response.Redirect("~/Login?sender=" + currentUrl);
+}
+Layout = "~/Layout/_Layout.cshtml";
+Page.Title = "Checkout";
+var address1 = "";
+var postalCode = "";
+var country = "";
+var city = "";
+// Redirect to Cart.cshtml if no cart exists in Session
+if (Session["cart"] == null)
+{
+Response.Redirect("Cart");
+}
+// Get current cart from Session
+    Cart cart = (Cart)Session["cart"];
+// Redirect to cart.cshtml if cart has no items
+    if(cart.Items.Count() == 0)
+    {
+        Response.Redirect("Cart");
+    }
+   if (IsPost)
+   {
+        address1 = Request["address1"];
+        postalCode = Request["postalCode"];
+        country = Request["country"];
+        city = Request["city"];
+// POST REQUEST HANDLER GOES HERE
+        if (address1.IsEmpty()) {
+            ModelState.AddError("address1", "Address is required.");
+        }
+        if (city.IsEmpty()) {
+            ModelState.AddError("city", "City is required");
+        }
+        if (country.IsEmpty()) {
+            ModelState.AddError("country", "Country is required");
+        }
+        if (postalCode.IsEmpty()) {
+            ModelState.AddError("postalCode", "Postal Code is Required");
+        }
+        if(ModelState.IsValid)
+        {
+// Save Order
+            var UserID = WebSecurity.GetUserId(WebSecurity.CurrentUserName);
+            var db = Database.Open("Product");
+            var orderSql = "INSERT INTO Orders (userid, ordershipped, ordertotal," +
+                    "orderdate, address," +
+                    "country, postalcode, city) " +
+                "VALUES ( @0, @1, @2, @3, @4, @5, @6, @7)";
+            db.Execute(orderSql,UserID,false,cart.TotalValue,DateTime.Now,address1,country,postalCode,city);
+            
+            foreach(var item in cart.Items)
+            {
+                    orderSql = "INSERT INTO OrderItems (productid, name, price) VALUES (" +
+                    "@0, @1, @2)";
+                    db.Execute(orderSql, item.ProductID, item.Name, item.Price);
+            }
+            cart.Clear();
+            Response.Redirect("~/OrderComplete");
+
+        }}
+}
+<h1>Checkout</h1>
+</br>
+<div id="checkout">
+<h2>Order Details</h2>
+ <text>
+        
+            <table>
+        <tr>
+            <td style ="width:200px;height: 20px;"><b>Product</b></td>
+            <td style ="width:200px;height: 20px;"><b>Price</b></td>
+              <td>&nbsp;</td>    
+        </tr>
+        @foreach (var item in cart.Items)
+        {
+
+            <tr>
+            <td style ="width:200px;height: 25px;"> @item.Name</td>
+            <td style ="width:200px;height: 25px;"> $@item.Price  </td>   
+               
+           
+          
+             </tr>
+              
+         }
+            <tr class="cartTotal">
+                <td colspan="2">&nbsp;</td>
+                <td>Total: £@cart.TotalValue</td>
+                <td>&nbsp;</td>
+             </tr>
+            </table>
+     </text>
+    </br>
+<h2>Delivery Details</h2>
+<form action="Checkout" method="post">
+
+
+   @Html.ValidationSummary()
+@Html.Label("Address :   ", "address1") <br/>
+@Html.TextBox("address1", address1, new { maxlength = "100" } )
+
+
+    <br/>
+@Html.Label("City :   ", "city") <br/>
+@Html.TextBox("city", country, new { maxlength = "50" } )
+    <br/>
+
+
+@Html.Label("Country :   ", "country") <br/>
+@Html.TextBox("country", country, new { maxlength = "50" } )
+<br/>
+@Html.Label("Postal Code :   ", "postalCode") <br/>
+@Html.TextBox("postalCode", postalCode, new { maxlength = "20" } )
+    <br/>
+
+<input type="submit" value="Place Order"/>
+
+</form>
+</div>

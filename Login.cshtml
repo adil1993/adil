@@ -1,0 +1,68 @@
+﻿@{
+    Layout = "~/Layout/_Layout.cshtml";
+var username = "";
+var password = "";
+   Validation.RequireField("username", "Username is Required");
+    Validation.RequireField("password", "Password is Required");
+    
+    if(IsPost)
+    {
+         WebSecurity.Logout();
+        username = Request["username"];
+        password = Request["password"];
+        
+// Validation
+       
+// Attempt login
+        if(Validation.IsValid()){
+                if(WebSecurity.Login(username, password))
+                {   
+                    
+                    if(username=="admin")
+                    {
+                        Response.Redirect("~/Admin/MainPage.cshtml");
+                    }
+                    else 
+                    {
+                        Response.Redirect("~/Default.cshtml");
+                    }
+                }
+                else
+                {
+                    ModelState.AddFormError("Unable to log in.");
+                }
+        }
+   }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Login</title>
+    
+</head>
+
+<body>
+    
+
+    
+<form action="login" method="post">
+
+   
+<h1>Login</h1><br/>
+         @Html.ValidationSummary("Errors with your submission:")
+@Html.Label("Username: ", "username")<br />
+@Html.TextBox("username", username,new { style="width:200px;" })
+@Html.ValidationMessage("username")
+    <br/>
+@Html.Label("Password: ", "password")<br />
+@Html.Password("password",password,new { style="width:200px;" })
+@Html.ValidationMessage("password")
+    <br/><br/>
+<input type="submit" value="Login" />
+
+</form>
+       
+    
+</body>
+</html>

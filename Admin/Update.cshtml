@@ -1,0 +1,100 @@
+﻿@{
+    Layout = "~/Layout/_Layout.cshtml";
+    Validation.RequireField("Name", "Product name is required.");
+    Validation.RequireField("Description", "Product description is required.");
+    Validation.RequireField("Price", "Product price is required.");
+     WebImage photo = null;
+    var newFileName = "";
+    var pp  = "";
+  
+
+    var ProductId  = UrlData[0];
+    if (ProductId.IsEmpty()) 
+    {
+         Response.Redirect("~/Admin/Edit.cshtml");
+    }
+     var db = Database.Open("Product");
+    var selectQueryString = "SELECT * FROM products WHERE id=@0";
+    var row = db.QuerySingle(selectQueryString, ProductId);
+    var Name = row.name;
+    var Description = row.description;
+    var Price = row.price;
+    var jojo =  @"../"+row.imagePath;
+    
+    var uName = Request.Form["Name"];
+    var uDescription = Request.Form["Description"];
+    var uPrice = Request.Form["Price"];
+    
+
+    
+    if (IsPost && Validation.IsValid()) 
+    {
+
+        photo = WebImage.GetImageFromRequest();
+          if(photo!=null)
+          {
+               
+       
+                newFileName = Guid.NewGuid().ToString() + "_" +
+                Path.GetFileName(photo.FileName);
+                 pp = @"images\thumbs\" + newFileName;
+                photo.Resize(width: 200, height: 200, preserveAspectRatio: true,preventEnlarge: true);
+                photo.Save(@"~\" + pp);
+             
+            
+                var updateQueryString ="UPDATE products SET name=@0, description=@1, price=@2,imagePath=@3 WHERE id=@4" ;
+        
+                db.Execute(updateQueryString, uName, uDescription, uPrice, pp,ProductId);
+                Response.Redirect("~/Admin/ListSelectCategory.cshtml");
+        }
+        else if(photo==null)
+        {
+            var updateQueryString ="UPDATE products SET name=@0, description=@1, price=@2 WHERE id=@3" ;
+        
+                db.Execute(updateQueryString, uName, uDescription, uPrice,ProductId);
+                Response.Redirect("~/Admin/ListSelectCategory.cshtml");
+        }
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Update Products</title>
+
+</head>
+<body>
+
+   <form method="post" action="" enctype="multipart/form-data">
+<div id="div1" style="float: left; margin-left:230px;">
+    
+
+ @Html.ValidationSummary("Errors with your submission:")
+
+  <h1>Update Product</h1>
+     
+       <label>Name:</label></br>
+       <input name="Name" type="text" style ="width: 250px" value="@Name" />
+        <br/>
+       <label>Description:</label></br>
+       <input name="Description" type="text" style ="width: 250px;"
+           value="@Description" />
+       <br/>
+       <label>Price:</label></br>
+       <input name="Price" type="text"style ="width: 250px;float: left" value="@Price" />
+     
+
+     
+     <br/> 
+      <label for="Image">Image</label>
+       <input type="file" name="Image" />
+      <br/>
+      <input type="submit" value="Update" />
+    <br/><br/>
+     <a style ="color: #0094ff"href="~/Admin/MainPage.cshtml">Go to Main Page</a>
+    
+           
+    
+ </div>
+       </form>
+</body>
+</html>

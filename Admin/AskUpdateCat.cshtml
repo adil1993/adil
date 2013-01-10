@@ -1,0 +1,22 @@
+﻿@{
+    Layout = "~/Layout/_Layout.cshtml";
+    Database db = Database.Open("Product");
+    var query = "select * from Categories";
+    var data = db.Query(query);
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body>
+        <h1>Select Category</h1>
+        @foreach(var run in data)
+        {
+          <a href="@Href("~/Admin/Edit.cshtml", @run.catname)" style ="font-size: 20px;color: #0094ff">  @run.catname</a><br/>
+        }
+    </body>
+</html>

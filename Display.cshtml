@@ -1,0 +1,54 @@
+﻿@{
+    Layout = "~/Layout/_Layout.cshtml";
+
+ 
+     var cat = UrlData[0];
+     var db = Database.Open("Product");
+     var q = "select * from products where category=@0";
+     var data  = db.Query(q,cat); 
+     
+                
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body> 
+       
+              
+         @{
+             
+                if(data!=null)
+                {
+                    <div class="products group">
+                   @foreach (var p in data) {
+                       var pather = "../" + p.imagePath; 
+                           
+            <div class="product">
+                <h3>@p.name</h3>
+                 <a href="@Href("~/ProductDetail.cshtml", p.Id)">
+              <img style="width: 200px;height: 150px;" src=@pather alt="">
+                      </a>
+                @p.description<br/>
+           
+                   $@string.Format("{0:f}", p.price)
+             
+            
+            </div>
+                  }    
+                         </div>
+              }
+            
+                
+                 
+               
+               
+        }
+          
+                  
+    </body>
+</html>

@@ -1,0 +1,21 @@
+﻿@{
+    Layout = "~/Layout/_Layout.cshtml";
+    Database db = Database.Open("Product");
+    var query = "select * from Categories";
+    var data = db.Query(query);
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body>
+        <h1>Select an Option </h1>
+       
+          <a href="@Href("~/Admin/UpdateCat.cshtml")" style ="font-size: 20px;color: #0094ff"> Category</a><br/>
+          <a href="@Href("~/Admin/AskUpdateCat.cshtml")" style ="font-size: 20px;color: #0094ff">  Product</a><br/>  
+    </body>
+</html>

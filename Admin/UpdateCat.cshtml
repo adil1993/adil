@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "~/Layout/_Layout.cshtml";
+    var db = Database.Open("Product");
+    var selectQueryString = "SELECT * FROM Categories";
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <title>Edit Categories</title>
+    
+</head>
+<body>
+       <br/><br/>
+     <a href="~/Admin/MainPage.cshtml" style="color: #0094ff;font-size: 15px">Go to Main Page</a><br/><br/>
+    <br/><br/>
+     <form method="post" action="" enctype="multipart/form-data">
+   <div class="products group">
+        @foreach (var p in db.Query(selectQueryString)) {
+             <a href="@Href("~/Admin/CatUpdate.cshtml", @p.catname)" style ="font-size: 15px;color: #0094ff">  Edit</a><br/>
+              <h3>  @p.catname </h3>
+               <br/><br/>
+        }    
+    </div>
+         </form>
+
+</body>
+</html>

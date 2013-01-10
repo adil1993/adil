@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+
+<html>
+    
+    <head>
+        <title>Shopping Website</title>
+
+        <link rel="stylesheet" href="@Href("~/stylesheets/Site.css")" type="text/css"/>
+     
+    </head>
+    
+    <body>
+          <!-- Layout: Header -->
+        @{
+            var db = Database.Open("Product");
+            var q = "select * from Categories";
+            var data = db.Query(q);
+        }
+        <div id="header" class="group">
+            <img style="margin: 0px auto 0px auto;" src="~/logo.jpg" alt=""/>
+            <ul id="menu" class="group">
+             <li><a href="~/Default.cshtml">Home</a></li>
+           
+                @foreach(var run in data)
+                {
+                    <li> <a href="@Href("~/Display.cshtml", @run.catname)">  @run.catname</a><br/></li>
+                }
+            <li><a href="~/Contactus.cshtml">Contact Us</a>
+                
+               
+                
+            </li>
+                
+            </ul>
+             <form action="~/Searchresult.cshtml" method="post">      
+             <table style ="float: right">
+                 <tr>
+           <td> <input   id ="Search" name ="Search" type="text" placeholder="Search Items" style="width: 200px;height: 18px; "/></td>
+           <td> <input  type ="submit" value ="Search" ></td>
+                     </tr>
+            </table>
+
+             </form>
+        </div>
+       
+        <!-- Layout: Body -->
+        <div id="main" class="group">
+            @RenderBody()
+        </div>
+        <!-- Layout: Footer -->
+        <div id="footer" class="group">
+            <ul id="alt-menu">
+            <li><a href="~/Default.cshtml">Home</a></li>
+            <li><a href="~/Contactus.cshtml">Contact Us</a></li>
+          
+                
+            <ul>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,74 @@
+﻿@{
+    Layout = "~/Layout/_Layout.cshtml";
+    var username = "";
+    var password1 = "";
+    var password2 = "";
+    Validation.RequireField("username", "Username is Required");
+    Validation.RequireField("password1", "Password1 is Required");
+    Validation.RequireField("password2", "Confirm Password is Required");
+    if(IsPost)
+    {
+
+    WebSecurity.Logout();
+username = Request["username"];
+password1 = Request["password1"];
+password2 = Request["password2"];
+  
+   if(WebSecurity.UserExists(username)){
+        ModelState.AddError("username", "An account with this name already exists.");
+    }
+    if(password1 != password2){
+        ModelState.AddError("password1", "The passwords do not match.");
+    }
+// Create Account
+    if(Validation.IsValid()){  
+        WebSecurity.CreateUserAndAccount(username, password1, null, false);
+      
+      
+        WebSecurity.Login(username, password1);
+        Response.Redirect("~/Default.cshtml");
+    }
+    }
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+     
+    </head>
+    <body>
+    
+<form action="" method="post">
+             
+
+
+
+<h2>Registration</h2>
+         @Html.ValidationSummary("Errors with your submission:")
+</br>
+@Html.Label("Username: ", "username")</br>
+@Html.TextBox("username", username,new { style="width:200px;margin-left:20" })
+@Html.ValidationMessage("username")
+</br></br>
+
+
+
+@Html.Label("Password: ", "password1")</br>
+@Html.Password("password1", password1,new { style="width:200px;" })
+@Html.ValidationMessage("password1")
+</br></br>
+@Html.Label("Confirm Password: ", "password2")<br/></br>
+@Html.Password("password2", password2,new { style="width:200px;" })
+</br></br>
+
+<input type="submit" value="Register" />
+
+       
+    
+</form>
+    
+    </body>
+</html>

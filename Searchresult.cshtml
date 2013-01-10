@@ -1,0 +1,62 @@
+﻿@{
+    Layout = "~/Layout/_Layout.cshtml";
+    var textbox = Request["Search"];
+     var counter = 1;
+     if(textbox=="")
+     {
+                  <div style="font-size: 20px;">Sorry no result(s) found</div><br/>
+     }
+     
+     var db = Database.Open("Product");
+     var q = "select * from products";
+     var data = db.Query(q);
+          
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body> 
+       
+              
+         @{
+             if(textbox!=""){
+                    <div class="products group">
+                   @foreach (var p in data) 
+                   { 
+                       var n = p.name.ToString();
+                       var cat = p.category.ToString();
+                       var descc = p.description.ToString();
+                       var pr = p.price.ToString();
+                       if(n.Contains(textbox) || cat.Contains(textbox) || descc.Contains(textbox) || pr.Contains(textbox) )
+                       {
+                      <div class="product">
+                       <h3>@p.name</h3>
+                        <a href="@Href("~/ProductDetail.cshtml", p.Id)">
+                        <img style="width: 200px;height: 150px;" src=@p.imagePath alt="">
+                         </a>
+                            @p.description<br/>
+                        $@string.Format("{0:f}", p.price)
+             
+            
+                         </div>
+                        }
+                    }
+                         </div>
+                    
+              
+               
+                
+                 
+               
+               }
+        }
+          
+        </div>
+          
+    </body>
+</html>

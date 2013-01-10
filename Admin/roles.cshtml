@@ -1,0 +1,52 @@
+﻿@{
+    Layout = "~/Layout/_Layout.cshtml";
+if(IsPost)
+{
+var newRole = Request["roleName"];
+// Add new role
+if(!newRole.IsEmpty() && !Roles.RoleExists(newRole))
+{
+    Roles.CreateRole(newRole);
+}
+}
+var currentRoles = Roles.GetAllRoles();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Roles</title>
+</head>
+<body>
+<h1>Roles</h1>
+<div>
+<h2>Current Roles</h2>
+@if(currentRoles.Length > 0)
+{
+@* List all current roles *@
+<ul>
+@foreach(var role in currentRoles)
+{
+<li><a href="roleDetails?roleName=@role">@role</a></li>
+}
+</ul>
+}
+else
+{
+<p>No roles currently defined.</p>
+}
+</div>
+<div>
+@* Form to add new roles to the membership database *@
+<h2>Add New Role</h2>
+<form action="roles" method="post">
+@Html.Label("Role Name: ", "roleName")
+@Html.TextBox("roleName")
+<input type="submit" value="Add Role" name="addRole" />
+    
+</form>
+    <a href="~/Admin/MainPage">Go to Main Page</a>
+</div>
+</body>
+</html>
+

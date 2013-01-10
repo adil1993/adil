@@ -1,0 +1,39 @@
+﻿@{
+    Layout = "~/Layout/_Layout.cshtml";
+    var cat = UrlData[0];
+    var db = Database.Open("Product");
+    var selectQueryString = "SELECT * FROM products where category=@0";
+    var counter = 1;
+    
+}
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <title>Edit Products</title>
+    
+</head>
+<body>
+       <br/><br/>
+     <a href="~/Admin/MainPage.cshtml" style="color: #0094ff;font-size: 15px">Go to Main Page</a><br/><br/>
+    <br/><br/>
+     <form method="post" action="Delete" enctype="multipart/form-data">
+   <div class="products group">
+        @foreach (var p in db.Query(selectQueryString,cat)) {
+            var pather =  @"../../"+p.imagePath;
+            <div class="product">
+                <a href="@Href("~/Admin/Update.cshtml", p.Id)" style ="font-size: 15px;color: #0094ff">  Edit</a><br/>
+                <h3>@p.name</h3>
+                <img src=@pather alt=""/>
+                <p>@p.description</p>
+                <ul class="group">
+                    <li class="price">$@string.Format("{0:f}", p.price)</li>
+                   
+                </ul>
+            </div>
+        }    
+    </div>
+         </form>
+
+</body>
+</html>

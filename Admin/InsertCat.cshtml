@@ -1,0 +1,52 @@
+﻿@{
+ 
+    Layout = "~/Layout/_Layout.cshtml";
+  
+    Validation.RequireField("CatName", "Product name is required.");
+  
+    
+    var Name = Request.Form["CatName"];
+   
+    if (IsPost && Validation.IsValid()) 
+    {
+       
+                           var db = Database.Open("Product");
+                  var insertQuery = "INSERT INTO Categories (catname) " +
+                    "VALUES (@0)";
+                    db.Execute(insertQuery,Name);
+                 Response.Redirect("~/Admin/ListSelectCategory.cshtml");
+     }
+}
+<!DOCTYPE html>
+<html>
+<head>
+ <title>Add Categories</title>
+        
+</head>
+<body>
+ 
+  
+ @Html.ValidationSummary("Errors with your submission:")
+    
+  <h1>Add Category</h1>
+    <br/><br/>
+    <form method="post" action="" enctype="multipart/form-data">
+     <table>
+    <tr> 
+        <td>  <label>Category Name :</label></td>
+       <td><input name="CatName" type="text" style ="width: 250px"/></td>
+     </tr>
+       <tr>
+           
+        
+   
+         </table>
+        
+      <input type="submit" value="Insert Data" />
+       
+            </form>
+    <br/><br/> 
+     <a href="~/Admin/MainPage.cshtml" style="color: #0094ff">Go to Main Page</a>
+    
+</body>
+</html>

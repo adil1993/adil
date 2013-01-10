@@ -1,0 +1,83 @@
+﻿@{
+   WebImage photo = null;
+    var newFileName = "";
+    var imagePath = "";
+    var imageThumbPath  = "";
+    Layout = "~/Layout/_Layout.cshtml";
+    var cat = UrlData[0];
+    Validation.RequireField("Name", "Product name is required.");
+    Validation.RequireField("Description", "Product description is required.");
+    Validation.RequireField("Price", "Product price is required.");
+    
+    
+    var Name = Request.Form["Name"];
+    var Description = Request.Form["Description"];
+    var Price = Request.Form["Price"];
+   
+    if (IsPost && Validation.IsValid()) 
+    {
+       
+        
+          photo = WebImage.GetImageFromRequest();
+          if(photo!=null)
+          {
+               
+       
+                newFileName = Guid.NewGuid().ToString() + "_" +
+                Path.GetFileName(photo.FileName);
+                 imageThumbPath = @"images\thumbs\" + newFileName;
+                photo.Resize(width: 200, height: 200, preserveAspectRatio: true,preventEnlarge: true);
+                photo.Save(@"~\" + imageThumbPath);
+             
+                           var db = Database.Open("Product");
+                  var insertQuery = "INSERT INTO products (name, description, price,imagePath,category) " +
+                    "VALUES (@0, @1, @2,@3,@4)";
+                    db.Execute(insertQuery, Name, Description, Price,imageThumbPath,cat);
+                 Response.Redirect("~/Admin/ListSelectCategory.cshtml");
+            }
+    }}
+<!DOCTYPE html>
+<html>
+<head>
+ <title>Add Products</title>
+        
+</head>
+<body>
+ 
+  
+ @Html.ValidationSummary("Errors with your submission:")
+    
+  <h1>Add Product</h1>
+    <br/><br/>
+    <form method="post" action="" enctype="multipart/form-data">
+     <table>
+    <tr> 
+        <td>  <label>Name:</label></td>
+       <td><input name="Name" type="text" style ="width: 250px" value="@Name" /></td>
+     </tr>
+       <tr>
+           
+         <td>  <label>Description:</label></td>
+     
+          <td>   <input name="Description" type="text" style ="width: 250px;"
+           value="@Description" /></td>
+    </tr>
+     <tr><td>  <label>Price:</label></td>
+     <td>  <input name="Price" type="text"style ="width: 250px;float: left" value="@Price" /></td>
+     </tr>
+        
+     
+     
+    <tr><td>  <label for="Image">Image</label></td>
+      <td> <input type="file" name="Image" id="Image" /></td>
+      </tr>
+         </table>
+        
+      <input type="submit" value="Insert Data" />
+       
+            </form>
+    <br/><br/> 
+     <a href="~/Admin/MainPage.cshtml" style="color: #0094ff">Go to Main Page</a>
+    
+</body>
+</html>

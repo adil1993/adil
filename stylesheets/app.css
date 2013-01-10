@@ -1,0 +1,52 @@
+.editor label {
+  float: left;
+  width: 30px;   // just putting an example here - but give them a width to align better
+  text-align: right; // this right-aligns them with the input
+}
+
+.editor input[type=text] {
+  width: 80px; // just putting an example value in here to make your inputs uniform in length
+  margin: 0 0 0 10px; // just some breathing room from the labels
+}
+
+fieldset { margin: 0 0 5px 0; }
+label {
+    width: 50px;
+    text-align: right;
+    float: left;   
+}
+input {
+     width: 100px;
+     margin: 0 0 0 10px;  
+}
+body
+{
+    background-color: #0ff
+}
+#image-container { 
+  min-width:782px; /* width of 3 images (746px) plus images' padding and border (36px) */ 
+  padding:10px; 
+  border:1px solid #d3d2d2; 
+  background-color:#f0f0f0; 
+ } 
+#image-container img { 
+  padding:5px; 
+  border:1px solid #d3d2d2; 
+  background-color:#fff;  
+ } 
+#image-right { 
+  float:right; 
+  width:250px; 
+  height:49px; 
+ } 
+#image-left { 
+  float:left; 
+  width:250px; 
+  height:36px; 
+ } 
+#image-center { 
+  display:block; 
+  width:246px; 
+  height:59px; 
+  margin:auto; 
+ } 

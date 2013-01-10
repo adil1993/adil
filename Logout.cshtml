@@ -1,0 +1,22 @@
+﻿@{
+    Layout = "~/Layout/_Layout.cshtml";
+    WebSecurity.Logout();
+    Cart cart = (Cart)Session["cart"];
+    if(cart!=null)
+    {
+            cart.Clear();
+    }
+ }
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body>
+      <div> You Are Logged Out Successfully </div>
+        <a href="~/Default.cshtml" style="color: #0094ff">Go to Main Page</a>
+    </body>
+</html>

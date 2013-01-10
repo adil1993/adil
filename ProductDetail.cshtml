@@ -1,0 +1,58 @@
+﻿@{
+    Layout = "~/Layout/_Layout.cshtml";    
+
+    var ProductId  = UrlData[0];
+    if (ProductId.IsEmpty()) 
+    {
+         Response.Redirect("~/Default.cshtml");
+    }
+     var db = Database.Open("Product");
+    var selectQueryString = "SELECT * FROM products WHERE id=@0";
+    var row = db.QuerySingle(selectQueryString, ProductId);
+    var Name = row.name;
+    var Description = row.description;
+    var Price = row.price;
+    var jojo = @"../"+row.imagePath;
+
+    PageData["name"] = Name;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Product Details</title>
+    
+    </head>
+    <body>
+   
+
+            
+        <form method="post" action="~/Cart.cshtml" enctype="multipart/form-data">
+   
+            <h1>Product Details</h1>
+           <br/>
+            <h3>@Name    </h3>  
+            <h3>@Description</h3> 
+            <h3>  $@Price  </h3>
+           
+            <img width="300px" height="300px"src=@jojo alt=""/>
+          
+            <fieldset style="width: 200px;border-bottom-color: #ffd800;">
+                <legend>Place Order</legend>
+             @Html.Label("Quantity ","quan")
+            <input style="width: 200px;" name="quan" type="text" /><br/>
+           <input type="submit" value="Add Me to Cart" style="float:right;width: 200px;height: 40px;"/> 
+            </fieldset>
+           
+        @Html.Hidden("productID", row.id)
+        @Html.Hidden("name", Name)
+        @Html.Hidden("price", Price)
+        @Html.Hidden("description", Description)
+            
+
+        </form>
+    
+    </body>
+</html>
